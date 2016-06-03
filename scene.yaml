@@ -1,0 +1,59 @@
+# import: https://mapzen.com/carto/zinc-style/zinc-style.yaml
+
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
+    seoul:
+        type: TopoJSON
+        url: https://rawgit.com/e9t/ba9edd99793a5c91eaab/raw/de4c6da8eb7106494c68f9a9fcdbdf978559edd8/seoul_municipalities_topo_simple.json
+    restaurant:
+        type: GeoJSON
+        url: https://gist.githubusercontent.com/hanbyul-here/2b02341a4ba6be20dad4c4af42462497/raw/c96e7b159f74123e68ac6dc7ca46a633282a6726/delish.geojson
+cameras:
+    perspective:
+        type: flat
+styles:
+    alpha:
+        base: polygons
+        blend: overlay
+
+layers:
+    seoul_municipalities_geo:
+        data: { source: seoul }
+        draw:
+            alpha:
+                order: 3
+                color: [1.,1.,1.,0.6]
+
+            lines:
+                order: 4
+                color: '#000'
+                width: 2px
+    delish:
+        data: { source: restaurant}
+        draw:
+            points:
+                interactive: true
+                order: 5
+                color: '#f00'
+
+    roads:
+        data: { source: mapzen}
+        filter: { not: { kind: [rail, ferry] } }
+        draw:
+            lines:
+                order: 1
+                color: '#777'
+                width: 2px
+        labels:
+            filter: { name: true }
+            highway:
+                filter: { kind: highway, $zoom: { min: 7 } }
+                draw:
+                    text:
+                        font:
+                            family: Helvetica
+                            fill: black
+                            size: 12px
+                            weight: bold
